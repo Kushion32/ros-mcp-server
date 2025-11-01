@@ -4,10 +4,12 @@
 ![Static Badge](https://img.shields.io/badge/ROS2-Available-green)
 ![Static Badge](https://img.shields.io/badge/License-Apache%202.0-blue)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
+![pip](https://img.shields.io/badge/pip-23.0%2B-blue)
 ![Dev Container](https://img.shields.io/badge/Dev-Container%20Ready-blue)
 ![GitHub Repo stars](https://img.shields.io/github/stars/robotmcp/ros-mcp-server?style=social)
 ![GitHub last commit](https://img.shields.io/github/last-commit/robotmcp/ros-mcp-server)
 
+<!-- mcp-name: io.github.robotmcp/ros-mcp-server -->
 
 <p align="center">
   <img src="https://github.com/robotmcp/ros-mcp-server/blob/main/docs/images/framework.png"/>
