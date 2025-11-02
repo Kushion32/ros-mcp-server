@@ -1,7 +1,7 @@
 # Example - TurtleSim in Docker
-For users who want to test the MCP server without needing to install ROS, this is an example that provides a dockerized ROS2  container preinstalled with the simplest possible 'robot' in the ROS ecosystem - TurtleSim. 
+   For users who want to test the MCP server without needing to install ROS, this is an example that provides a dockerized ROS2  container preinstalled with the simplest possible 'robot' in the ROS ecosystem - TurtleSim. 
 
-Turtlesim is a lightweight simulator for learning ROS / ROS 2. It illustrates what ROS does at the most basic level to give you an idea of what you will do with a real robot or a robot simulation later on.
+   Turtlesim is a lightweight simulator for learning ROS / ROS 2. It illustrates what ROS does at the most basic level to give you an idea of what you will do with a real robot or a robot simulation later on.
 
 ## Prerequisites
 
@@ -48,41 +48,38 @@ cd examples/5_docker_turtlesim
 docker compose build --no-cache turtlesim
 ```
 
-### 2. Start the Container
+### 2. Launch Turtlesim
 
-**The startup process varies by platform. Choose your OS:**
+#### Automatic Setup (Recommended)
 
-#### MacOS
+The easiest way to launch turtlesim with proper X11 setup:
+
 ```bash
-# 1. Start XQuartz
-open -a XQuartz
-
-# 2. Set up X11 permissions (wait for XQuartz to start)
-export DISPLAY=:1 && xhost +
-
-# 3. Set up Docker display variable
-export DOCKER_DISPLAY="$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}'):1"
-
-# 4. Launch container
-docker compose up
+./launch.sh
 ```
 
-#### Linux
-```bash
-# 1. Allow X11 forwarding
-xhost +local:docker
+This script automatically detects your OS and handles all platform-specific X11 configuration. It will:
+- **macOS**: Start XQuartz, detect display, configure IP-based forwarding
+- **Linux**: Set up X11 permissions with `xhost +local:docker`
+- **Windows**: Configure X server connection via `host.docker.internal`
 
-# 2. Launch container  
-DOCKER_DISPLAY=$DISPLAY docker compose up
+#### Manual Setup (Advanced)
+
+If you prefer manual control or the automatic script doesn't work:
+
+**macOS:**
+```bash
+./docker/scripts/launch_macos.sh
 ```
 
-#### Windows (PowerShell)
+**Linux:**
 ```bash
-# 1. Set DISPLAY for Windows Docker Desktop
-$env:DOCKER_DISPLAY="host.docker.internal:0.0"
+./docker/scripts/launch_linux.sh
+```
 
-# 2. Launch container
-docker compose up
+**Windows (WSL/Git Bash):**
+```bash
+./docker/scripts/launch_windows.sh
 ```
 
 
