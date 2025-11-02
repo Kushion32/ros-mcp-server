@@ -8,19 +8,19 @@ OS_TYPE=$(uname -s)
 
 case "$OS_TYPE" in
     Darwin*)
-        echo "🍎 Detected macOS - launching with XQuartz support..."
+        echo "Detected macOS - launching with XQuartz support..."
         ./docker/scripts/launch_macos.sh
         ;;
     Linux*)
-        echo "🐧 Detected Linux - launching with X11 support..."
+        echo "Detected Linux - launching with X11 support..."
         ./docker/scripts/launch_linux.sh
         ;;
     MINGW*|MSYS*|CYGWIN*)
-        echo "🪟 Detected Windows - launching with X server support..."
+        echo "Detected Windows - launching with X server support..."
         ./docker/scripts/launch_windows.sh
         ;;
     *)
-        echo "❌ Unsupported OS: $OS_TYPE"
+        echo "Unsupported OS: $OS_TYPE"
         echo "   Please run the appropriate script manually:"
         echo "   - macOS: ./docker/scripts/launch_macos.sh"
         echo "   - Linux: ./docker/scripts/launch_linux.sh"
