@@ -2,12 +2,12 @@ name: Test Docker Turtlesim Launch
 
 on:
   push:
-    branches: [ develop, main ]
+    branches: [ test ]
     paths:
       - 'examples/5_docker_turtlesim/**'
       - '.github/workflows/test-docker-turtlesim.yml'
   pull_request:
-    branches: [ develop, main ]
+    branches: [ test ]
     paths:
       - 'examples/5_docker_turtlesim/**'
 
