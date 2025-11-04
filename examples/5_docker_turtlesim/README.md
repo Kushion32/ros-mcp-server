@@ -158,7 +158,7 @@ export DISPLAY=:1  # or :0 depending on what you found
 xhost +
 
 # Set DISPLAY for Docker (use your IP from Step 4 + display number)
-export DOCKER_DISPLAY="10.1.56.72:1"  # Replace with your actual IP
+export DOCKER_DISPLAY=<YOUR_IP>  # Replace with your actual IP
 ```
 
 ## Troubleshooting
