@@ -33,7 +33,7 @@ echo "Docker will use DISPLAY=$DISPLAY"
 # Step 4: Start the container
 echo ""
 echo "Starting Turtlesim container..."
-echo "   If successful, you should see a window with a turtle!"
+echo "If successful, you should see a window with a turtle!"
 echo ""
 
 docker compose up turtlesim
