@@ -24,7 +24,7 @@ if command -v xhost >/dev/null 2>&1; then
     }
 else
     echo "WARNING: xhost not found. Install with: sudo apt-get install x11-xserver-utils"
-    echo "   Continuing anyway, but GUI may not work..."
+    exit 1
 fi
 
 # Step 3: Export DISPLAY for Docker
