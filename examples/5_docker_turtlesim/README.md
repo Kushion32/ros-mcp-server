@@ -55,7 +55,7 @@ docker compose build --no-cache turtlesim
 The easiest way to launch turtlesim with proper X11 setup:
 
 ```bash
-./launch.sh
+./scrips/launch.sh
 ```
 
 This script automatically detects your OS and handles all platform-specific X11 configuration. It will:
@@ -69,17 +69,17 @@ If you prefer manual control or the automatic script doesn't work:
 
 **macOS:**
 ```bash
-./docker/scripts/launch_macos.sh
+./scripts/launch_macos.sh
 ```
 
 **Linux (or Windows WSL):**
 ```bash
-./docker/scripts/launch_linux.sh
+./scripts/launch_linux.sh
 ```
 
 **Windows:**
 ```bash
-./docker/scripts/launch_windows.sh
+./scripts/launch_windows.sh
 ```
 
 The container will automatically start both turtlesim and rosbridge websocket server. You should see:
