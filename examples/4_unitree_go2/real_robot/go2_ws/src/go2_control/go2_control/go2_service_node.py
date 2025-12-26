@@ -101,30 +101,30 @@ from go2_control.go2_backend import backend_loop
 MOVE_INTERVAL = 0.5  # seconds between Move() calls
 
 # Velocity limits from SDK documentation
-MAX_VX = 2.5       # m/s (can go up to 3.8 forward)
-MAX_VY = 1.0       # m/s
-MAX_VYAW = 4.0     # rad/s
+MAX_VX = 2.5  # m/s (can go up to 3.8 forward)
+MAX_VY = 1.0  # m/s
+MAX_VYAW = 4.0  # rad/s
 
 
 def calculate_iterations(distance: float, velocity: float, interval: float = MOVE_INTERVAL) -> int:
     """
     Calculate the number of move iterations needed to cover a distance.
-    
+
     Formula:
         distance_per_call = velocity × interval
         iterations = ceil(distance / distance_per_call)
-    
+
     Args:
         distance: Target distance in meters (or radians for rotation)
         velocity: Movement velocity in m/s (or rad/s for rotation)
         interval: Time between Move() calls (default 0.5s)
-    
+
     Returns:
         Number of iterations (minimum 1)
     """
     if abs(velocity) < 0.001:
         return 1
-    
+
     distance_per_call = abs(velocity) * interval
     iterations = math.ceil(abs(distance) / distance_per_call)
     return max(1, iterations)
@@ -134,15 +134,15 @@ class Go2ServiceNode(Node):
     """
     ROS 2 Node providing services for Go2 robot control.
     """
-    
+
     def __init__(self, cmd_queue: Queue):
         super().__init__("go2_services")
         self.queue = cmd_queue
-        
+
         # ============================================================
         # POSTURE SERVICES (Trigger type)
         # ============================================================
-        
+
         self.create_service(Trigger, "/go2/damp", self.cb_damp)
         self.create_service(Trigger, "/go2/balance", self.cb_balance)
         self.create_service(Trigger, "/go2/stop", self.cb_stop)
@@ -151,26 +151,26 @@ class Go2ServiceNode(Node):
         self.create_service(Trigger, "/go2/recovery", self.cb_recovery)
         self.create_service(Trigger, "/go2/sit", self.cb_sit)
         self.create_service(Trigger, "/go2/rise_sit", self.cb_rise_sit)
-        
+
         # ============================================================
         # MOVEMENT SERVICE (Move type)
         # ============================================================
-        
+
         self.create_service(Move, "/go2/move", self.cb_move)
-        
+
         # ============================================================
         # BODY CONFIGURATION SERVICES
         # ============================================================
-        
+
         self.create_service(SetFloat, "/go2/body_height", self.cb_body_height)
         self.create_service(SetFloat, "/go2/foot_raise_height", self.cb_foot_raise_height)
         self.create_service(SetInt, "/go2/speed_level", self.cb_speed_level)
         self.create_service(SetInt, "/go2/switch_gait", self.cb_switch_gait)
-        
+
         # ============================================================
         # TOGGLE SERVICES (SetBool type)
         # ============================================================
-        
+
         self.create_service(SetBool, "/go2/switch_joystick", self.cb_switch_joystick)
         self.create_service(SetBool, "/go2/continuous_gait", self.cb_continuous_gait)
         self.create_service(SetBool, "/go2/handstand", self.cb_handstand)
@@ -179,11 +179,11 @@ class Go2ServiceNode(Node):
         self.create_service(SetBool, "/go2/free_bound", self.cb_free_bound)
         self.create_service(SetBool, "/go2/cross_step", self.cb_cross_step)
         self.create_service(SetBool, "/go2/free_jump", self.cb_free_jump)
-        
+
         # ============================================================
         # GESTURE / TRICK SERVICES (Trigger type)
         # ============================================================
-        
+
         self.create_service(Trigger, "/go2/hello", self.cb_hello)
         self.create_service(Trigger, "/go2/stretch", self.cb_stretch)
         self.create_service(Trigger, "/go2/wallow", self.cb_wallow)
@@ -197,11 +197,11 @@ class Go2ServiceNode(Node):
         self.create_service(Trigger, "/go2/back_flip", self.cb_back_flip)
         self.create_service(Trigger, "/go2/dance1", self.cb_dance1)
         self.create_service(Trigger, "/go2/dance2", self.cb_dance2)
-        
+
         # ============================================================
         # LOG AVAILABLE SERVICES
         # ============================================================
-        
+
         self.get_logger().info("=" * 65)
         self.get_logger().info("Go2 ROS 2 Services Ready!")
         self.get_logger().info("=" * 65)
@@ -223,15 +223,17 @@ class Go2ServiceNode(Node):
         self.get_logger().info("  /go2/cross_step, /go2/free_jump")
         self.get_logger().info("")
         self.get_logger().info("GESTURES/TRICKS (Trigger):")
-        self.get_logger().info("  /go2/hello, /go2/stretch, /go2/wallow, /go2/pose_on, /go2/pose_off")
+        self.get_logger().info(
+            "  /go2/hello, /go2/stretch, /go2/wallow, /go2/pose_on, /go2/pose_off"
+        )
         self.get_logger().info("  /go2/scrape, /go2/front_flip, /go2/front_jump, /go2/front_pounce")
         self.get_logger().info("  /go2/left_flip, /go2/back_flip, /go2/dance1, /go2/dance2")
         self.get_logger().info("=" * 65)
-    
+
     # ================================================================
     # POSTURE SERVICE CALLBACKS
     # ================================================================
-    
+
     def cb_damp(self, request, response):
         """Emergency stop - enter damping state."""
         self.queue.put({"type": "damp"})
@@ -239,7 +241,7 @@ class Go2ServiceNode(Node):
         response.message = "Damp command sent (emergency stop)"
         self.get_logger().info("Service: /go2/damp")
         return response
-    
+
     def cb_balance(self, request, response):
         """Enter balance stand mode."""
         self.queue.put({"type": "balance"})
@@ -247,7 +249,7 @@ class Go2ServiceNode(Node):
         response.message = "Balance stand command sent"
         self.get_logger().info("Service: /go2/balance")
         return response
-    
+
     def cb_stop(self, request, response):
         """Stop current action and restore defaults."""
         self.queue.put({"type": "stop"})
@@ -255,7 +257,7 @@ class Go2ServiceNode(Node):
         response.message = "Stop command sent"
         self.get_logger().info("Service: /go2/stop")
         return response
-    
+
     def cb_stand_up(self, request, response):
         """Stand up to high stance."""
         self.queue.put({"type": "stand_up"})
@@ -263,7 +265,7 @@ class Go2ServiceNode(Node):
         response.message = "Stand up command sent"
         self.get_logger().info("Service: /go2/stand_up")
         return response
-    
+
     def cb_stand_down(self, request, response):
         """Lie down to low stance."""
         self.queue.put({"type": "stand_down"})
@@ -271,7 +273,7 @@ class Go2ServiceNode(Node):
         response.message = "Stand down command sent"
         self.get_logger().info("Service: /go2/stand_down")
         return response
-    
+
     def cb_recovery(self, request, response):
         """Recovery stand from fallen state."""
         self.queue.put({"type": "recovery"})
@@ -279,7 +281,7 @@ class Go2ServiceNode(Node):
         response.message = "Recovery stand command sent"
         self.get_logger().info("Service: /go2/recovery")
         return response
-    
+
     def cb_sit(self, request, response):
         """Sit down."""
         self.queue.put({"type": "sit"})
@@ -287,7 +289,7 @@ class Go2ServiceNode(Node):
         response.message = "Sit command sent"
         self.get_logger().info("Service: /go2/sit")
         return response
-    
+
     def cb_rise_sit(self, request, response):
         """Stand up from sitting."""
         self.queue.put({"type": "rise_sit"})
@@ -295,11 +297,11 @@ class Go2ServiceNode(Node):
         response.message = "Rise from sit command sent"
         self.get_logger().info("Service: /go2/rise_sit")
         return response
-    
+
     # ================================================================
     # MOVEMENT SERVICE CALLBACK
     # ================================================================
-    
+
     def cb_move(self, request, response):
         """
         Execute a movement with specified velocities and distance.
@@ -309,7 +311,7 @@ class Go2ServiceNode(Node):
         vy = request.vy
         vyaw = request.vyaw
         distance = request.distance
-        
+
         # Validate inputs
         if distance <= 0:
             response.success = False
@@ -317,17 +319,17 @@ class Go2ServiceNode(Node):
             response.estimated_time = 0.0
             response.iterations = 0
             return response
-        
+
         # Clamp velocities to safe limits
         vx = max(-MAX_VX, min(MAX_VX, vx))
         vy = max(-MAX_VY, min(MAX_VY, vy))
         vyaw = max(-MAX_VYAW, min(MAX_VYAW, vyaw))
-        
+
         # Calculate iterations based on dominant motion
         abs_vx = abs(vx)
         abs_vy = abs(vy)
         abs_vyaw = abs(vyaw)
-        
+
         if abs_vx >= abs_vy and abs_vx >= abs_vyaw and abs_vx > 0.001:
             iterations = calculate_iterations(distance, abs_vx)
             motion_type = "forward" if vx > 0 else "backward"
@@ -344,17 +346,11 @@ class Go2ServiceNode(Node):
             response.estimated_time = 0.0
             response.iterations = 0
             return response
-        
+
         estimated_time = iterations * MOVE_INTERVAL
-        
-        self.queue.put({
-            "type": "move",
-            "vx": vx,
-            "vy": vy,
-            "wz": vyaw,
-            "iterations": iterations
-        })
-        
+
+        self.queue.put({"type": "move", "vx": vx, "vy": vy, "wz": vyaw, "iterations": iterations})
+
         response.success = True
         response.message = (
             f"Moving {motion_type}: vx={vx:.2f}m/s, vy={vy:.2f}m/s, "
@@ -363,14 +359,14 @@ class Go2ServiceNode(Node):
         )
         response.estimated_time = estimated_time
         response.iterations = iterations
-        
+
         self.get_logger().info(f"Service: /go2/move - {response.message}")
         return response
-    
+
     # ================================================================
     # BODY CONFIGURATION CALLBACKS
     # ================================================================
-    
+
     def cb_body_height(self, request, response):
         """Set body height relative to default (range: -0.18 to 0.03m)."""
         height = max(-0.18, min(0.03, request.value))
@@ -379,7 +375,7 @@ class Go2ServiceNode(Node):
         response.message = f"Body height set to {height:.3f}m (relative to default 0.33m)"
         self.get_logger().info(f"Service: /go2/body_height value={height}")
         return response
-    
+
     def cb_foot_raise_height(self, request, response):
         """Set foot raise height relative to default (range: -0.06 to 0.03m)."""
         height = max(-0.06, min(0.03, request.value))
@@ -388,7 +384,7 @@ class Go2ServiceNode(Node):
         response.message = f"Foot raise height set to {height:.3f}m (relative to default 0.09m)"
         self.get_logger().info(f"Service: /go2/foot_raise_height value={height}")
         return response
-    
+
     def cb_speed_level(self, request, response):
         """Set speed level (-1=slow, 0=normal, 1=fast)."""
         level = max(-1, min(1, request.value))
@@ -398,21 +394,27 @@ class Go2ServiceNode(Node):
         response.message = f"Speed level set to {level} ({level_names.get(level, 'unknown')})"
         self.get_logger().info(f"Service: /go2/speed_level value={level}")
         return response
-    
+
     def cb_switch_gait(self, request, response):
         """Switch gait (0=idle, 1=trot, 2=trot running, 3=forward climb, 4=reverse climb)."""
         gait = max(0, min(4, request.value))
         self.queue.put({"type": "switch_gait", "gait": gait})
-        gait_names = {0: "idle", 1: "trot", 2: "trot running", 3: "forward climb", 4: "reverse climb"}
+        gait_names = {
+            0: "idle",
+            1: "trot",
+            2: "trot running",
+            3: "forward climb",
+            4: "reverse climb",
+        }
         response.success = True
         response.message = f"Gait switched to {gait} ({gait_names.get(gait, 'unknown')})"
         self.get_logger().info(f"Service: /go2/switch_gait value={gait}")
         return response
-    
+
     # ================================================================
     # TOGGLE SERVICE CALLBACKS
     # ================================================================
-    
+
     def cb_switch_joystick(self, request, response):
         """Enable/disable native remote control response."""
         self.queue.put({"type": "switch_joystick", "enable": request.enable})
@@ -420,7 +422,7 @@ class Go2ServiceNode(Node):
         response.message = f"Joystick response {'enabled' if request.enable else 'disabled'}"
         self.get_logger().info(f"Service: /go2/switch_joystick enable={request.enable}")
         return response
-    
+
     def cb_continuous_gait(self, request, response):
         """Enable/disable continuous gait mode."""
         self.queue.put({"type": "continuous_gait", "enable": request.enable})
@@ -428,7 +430,7 @@ class Go2ServiceNode(Node):
         response.message = f"Continuous gait {'enabled' if request.enable else 'disabled'}"
         self.get_logger().info(f"Service: /go2/continuous_gait enable={request.enable}")
         return response
-    
+
     def cb_handstand(self, request, response):
         """Enable/disable handstand mode."""
         self.queue.put({"type": "handstand", "enable": request.enable})
@@ -436,7 +438,7 @@ class Go2ServiceNode(Node):
         response.message = f"Handstand {'enabled' if request.enable else 'disabled'}"
         self.get_logger().info(f"Service: /go2/handstand enable={request.enable}")
         return response
-    
+
     def cb_walk_upright(self, request, response):
         """Enable/disable upright walking mode."""
         self.queue.put({"type": "walk_upright", "enable": request.enable})
@@ -444,7 +446,7 @@ class Go2ServiceNode(Node):
         response.message = f"Walk upright {'enabled' if request.enable else 'disabled'}"
         self.get_logger().info(f"Service: /go2/walk_upright enable={request.enable}")
         return response
-    
+
     def cb_free_avoid(self, request, response):
         """Enable/disable obstacle avoidance."""
         self.queue.put({"type": "free_avoid", "enable": request.enable})
@@ -452,7 +454,7 @@ class Go2ServiceNode(Node):
         response.message = f"Obstacle avoidance {'enabled' if request.enable else 'disabled'}"
         self.get_logger().info(f"Service: /go2/free_avoid enable={request.enable}")
         return response
-    
+
     def cb_free_bound(self, request, response):
         """Enable/disable bounding gait."""
         self.queue.put({"type": "free_bound", "enable": request.enable})
@@ -460,7 +462,7 @@ class Go2ServiceNode(Node):
         response.message = f"Bounding gait {'enabled' if request.enable else 'disabled'}"
         self.get_logger().info(f"Service: /go2/free_bound enable={request.enable}")
         return response
-    
+
     def cb_cross_step(self, request, response):
         """Enable/disable cross-step walking."""
         self.queue.put({"type": "cross_step", "enable": request.enable})
@@ -468,7 +470,7 @@ class Go2ServiceNode(Node):
         response.message = f"Cross-step {'enabled' if request.enable else 'disabled'}"
         self.get_logger().info(f"Service: /go2/cross_step enable={request.enable}")
         return response
-    
+
     def cb_free_jump(self, request, response):
         """Enable/disable jumping capability."""
         self.queue.put({"type": "free_jump", "enable": request.enable})
@@ -476,11 +478,11 @@ class Go2ServiceNode(Node):
         response.message = f"Jumping {'enabled' if request.enable else 'disabled'}"
         self.get_logger().info(f"Service: /go2/free_jump enable={request.enable}")
         return response
-    
+
     # ================================================================
     # GESTURE / TRICK SERVICE CALLBACKS
     # ================================================================
-    
+
     def cb_hello(self, request, response):
         """Say hello (wave gesture)."""
         self.queue.put({"type": "hello"})
@@ -488,7 +490,7 @@ class Go2ServiceNode(Node):
         response.message = "Hello gesture command sent"
         self.get_logger().info("Service: /go2/hello")
         return response
-    
+
     def cb_stretch(self, request, response):
         """Perform stretch."""
         self.queue.put({"type": "stretch"})
@@ -496,7 +498,7 @@ class Go2ServiceNode(Node):
         response.message = "Stretch command sent"
         self.get_logger().info("Service: /go2/stretch")
         return response
-    
+
     def cb_wallow(self, request, response):
         """Roll over."""
         self.queue.put({"type": "wallow"})
@@ -504,7 +506,7 @@ class Go2ServiceNode(Node):
         response.message = "Wallow (roll) command sent"
         self.get_logger().info("Service: /go2/wallow")
         return response
-    
+
     def cb_pose_on(self, request, response):
         """Strike a pose."""
         self.queue.put({"type": "pose", "enable": True})
@@ -512,7 +514,7 @@ class Go2ServiceNode(Node):
         response.message = "Pose on command sent"
         self.get_logger().info("Service: /go2/pose_on")
         return response
-    
+
     def cb_pose_off(self, request, response):
         """Exit pose."""
         self.queue.put({"type": "pose", "enable": False})
@@ -520,7 +522,7 @@ class Go2ServiceNode(Node):
         response.message = "Pose off command sent"
         self.get_logger().info("Service: /go2/pose_off")
         return response
-    
+
     def cb_scrape(self, request, response):
         """New Year greeting gesture."""
         self.queue.put({"type": "scrape"})
@@ -528,7 +530,7 @@ class Go2ServiceNode(Node):
         response.message = "Scrape (New Year greeting) command sent"
         self.get_logger().info("Service: /go2/scrape")
         return response
-    
+
     def cb_front_flip(self, request, response):
         """Perform front flip."""
         self.queue.put({"type": "front_flip"})
@@ -536,7 +538,7 @@ class Go2ServiceNode(Node):
         response.message = "Front flip command sent"
         self.get_logger().info("Service: /go2/front_flip")
         return response
-    
+
     def cb_front_jump(self, request, response):
         """Jump forward."""
         self.queue.put({"type": "front_jump"})
@@ -544,7 +546,7 @@ class Go2ServiceNode(Node):
         response.message = "Front jump command sent"
         self.get_logger().info("Service: /go2/front_jump")
         return response
-    
+
     def cb_front_pounce(self, request, response):
         """Pounce forward."""
         self.queue.put({"type": "front_pounce"})
@@ -552,7 +554,7 @@ class Go2ServiceNode(Node):
         response.message = "Front pounce command sent"
         self.get_logger().info("Service: /go2/front_pounce")
         return response
-    
+
     def cb_left_flip(self, request, response):
         """Perform left flip."""
         self.queue.put({"type": "left_flip"})
@@ -560,7 +562,7 @@ class Go2ServiceNode(Node):
         response.message = "Left flip command sent"
         self.get_logger().info("Service: /go2/left_flip")
         return response
-    
+
     def cb_back_flip(self, request, response):
         """Perform back flip."""
         self.queue.put({"type": "back_flip"})
@@ -568,7 +570,7 @@ class Go2ServiceNode(Node):
         response.message = "Back flip command sent"
         self.get_logger().info("Service: /go2/back_flip")
         return response
-    
+
     def cb_dance1(self, request, response):
         """Perform dance routine 1."""
         self.queue.put({"type": "dance1"})
@@ -576,7 +578,7 @@ class Go2ServiceNode(Node):
         response.message = "Dance 1 command sent"
         self.get_logger().info("Service: /go2/dance1")
         return response
-    
+
     def cb_dance2(self, request, response):
         """Perform dance routine 2."""
         self.queue.put({"type": "dance2"})
@@ -592,13 +594,13 @@ def main(args=None):
     Starts the backend process and ROS 2 service node.
     """
     cmd_queue = Queue()
-    
+
     backend = Process(target=backend_loop, args=(cmd_queue,), daemon=True)
     backend.start()
-    
+
     rclpy.init(args=args)
     node = Go2ServiceNode(cmd_queue)
-    
+
     try:
         rclpy.spin(node)
     except KeyboardInterrupt:
