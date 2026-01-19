@@ -6,6 +6,7 @@ import time
 import uuid
 
 from fastmcp import Context, FastMCP
+from mcp.types import ToolAnnotations
 
 from ros_mcp.utils.websocket import WebSocketManager
 
@@ -19,7 +20,11 @@ def register_action_tools(
     @mcp.tool(
         description=(
             "Get list of all available ROS actions. Works only with ROS 2.\nExample:\nget_actions()"
-        )
+        ),
+        annotations=ToolAnnotations(
+            title="Get Actions",
+            readOnlyHint=True,
+        ),
     )
     def get_actions() -> dict:
         """
@@ -105,7 +110,11 @@ def register_action_tools(
         description=(
             "Get complete action details including type, goal, result, and feedback structures. Works only with ROS 2.\n"
             "Example:\nget_action_details('/turtle1/rotate_absolute')"
-        )
+        ),
+        annotations=ToolAnnotations(
+            title="Get Action Details",
+            readOnlyHint=True,
+        ),
     )
     def get_action_details(action: str) -> dict:
         """
@@ -419,7 +428,11 @@ def register_action_tools(
         description=(
             "Get action status for a specific action name. Works only with ROS 2.\n"
             "Example:\nget_action_status('/fibonacci')"
-        )
+        ),
+        annotations=ToolAnnotations(
+            title="Get Action Status",
+            readOnlyHint=True,
+        ),
     )
     def get_action_status(action_name: str) -> dict:
         """
@@ -537,7 +550,11 @@ def register_action_tools(
         description=(
             "Send a goal to a ROS action server. Works only with ROS 2.\n"
             "Example:\nsend_action_goal('/turtle1/rotate_absolute', 'turtlesim/action/RotateAbsolute', {'theta': 1.57})"
-        )
+        ),
+        annotations=ToolAnnotations(
+            title="Send Action Goal",
+            destructiveHint=True,
+        ),
     )
     async def send_action_goal(
         action_name: str,
@@ -686,7 +703,11 @@ def register_action_tools(
         description=(
             "Cancel a specific action goal. Works only with ROS 2.\n"
             "Example:\ncancel_action_goal('/turtle1/rotate_absolute', 'goal_1758653551839_21acd486')"
-        )
+        ),
+        annotations=ToolAnnotations(
+            title="Cancel Action Goal",
+            destructiveHint=True,
+        ),
     )
     def cancel_action_goal(action_name: str, goal_id: str) -> dict:
         """

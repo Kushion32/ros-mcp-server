@@ -1,6 +1,7 @@
 """Service tools for ROS MCP."""
 
 from fastmcp import FastMCP
+from mcp.types import ToolAnnotations
 
 from ros_mcp.utils.websocket import WebSocketManager
 
@@ -11,7 +12,13 @@ def register_service_tools(
 ) -> None:
     """Register all service-related tools."""
 
-    @mcp.tool(description=("Get list of all available ROS services.\nExample:\nget_services()"))
+    @mcp.tool(
+        description=("Get list of all available ROS services.\nExample:\nget_services()"),
+        annotations=ToolAnnotations(
+            title="Get Services",
+            readOnlyHint=True,
+        ),
+    )
     def get_services() -> dict:
         """
         Get list of all available ROS services.
@@ -49,7 +56,11 @@ def register_service_tools(
     @mcp.tool(
         description=(
             "Get the service type for a specific service.\nExample:\nget_service_type('/rosapi/topics')"
-        )
+        ),
+        annotations=ToolAnnotations(
+            title="Get Service Type",
+            readOnlyHint=True,
+        ),
     )
     def get_service_type(service: str) -> dict:
         """
@@ -100,7 +111,11 @@ def register_service_tools(
             "Get complete service details including request/response structures and provider nodes.\n"
             "Example:\n"
             "get_service_details('/rosapi/topics')"
-        )
+        ),
+        annotations=ToolAnnotations(
+            title="Get Service Details",
+            readOnlyHint=True,
+        ),
     )
     def get_service_details(service: str) -> dict:
         """
@@ -236,7 +251,11 @@ def register_service_tools(
             "IMPORTANT: Field names in the request dict should match the field names shown by get_service_details(), "
             "which are already formatted for rosbridge (without leading underscores). "
             "For example, use {'topic': '/image'} not {'_topic': '/image'}."
-        )
+        ),
+        annotations=ToolAnnotations(
+            title="Call Service",
+            destructiveHint=True,
+        ),
     )
     def call_service(
         service_name: str, service_type: str, request: dict, timeout: float = None

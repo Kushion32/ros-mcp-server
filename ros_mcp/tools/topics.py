@@ -4,6 +4,7 @@ import json
 import time
 
 from fastmcp import FastMCP
+from mcp.types import ToolAnnotations
 
 from ros_mcp.tools.images import convert_expects_image_hint
 from ros_mcp.utils.websocket import WebSocketManager, parse_input
@@ -15,7 +16,13 @@ def register_topic_tools(
 ) -> None:
     """Register all topic-related tools."""
 
-    @mcp.tool(description=("Get list of all available ROS topics.\nExample:\nget_topics()"))
+    @mcp.tool(
+        description=("Get list of all available ROS topics.\nExample:\nget_topics()"),
+        annotations=ToolAnnotations(
+            title="Get Topics",
+            readOnlyHint=True,
+        ),
+    )
     def get_topics() -> dict:
         """
         Fetch available topics from the ROS bridge.
@@ -55,7 +62,11 @@ def register_topic_tools(
     @mcp.tool(
         description=(
             "Get the message type for a specific topic.\nExample:\nget_topic_type('/cmd_vel')"
-        )
+        ),
+        annotations=ToolAnnotations(
+            title="Get Topic Type",
+            readOnlyHint=True,
+        ),
     )
     def get_topic_type(topic: str) -> dict:
         """
@@ -106,7 +117,11 @@ def register_topic_tools(
             "Get detailed information about a specific topic including its type, publishers, and subscribers.\n"
             "Example:\n"
             "get_topic_details('/cmd_vel')"
-        )
+        ),
+        annotations=ToolAnnotations(
+            title="Get Topic Details",
+            readOnlyHint=True,
+        ),
     )
     def get_topic_details(topic: str) -> dict:
         """
@@ -186,7 +201,11 @@ def register_topic_tools(
             "Get the complete structure/definition of a message type.\n"
             "Example:\n"
             "get_message_details('geometry_msgs/Twist')"
-        )
+        ),
+        annotations=ToolAnnotations(
+            title="Get Message Details",
+            readOnlyHint=True,
+        ),
     )
     def get_message_details(message_type: str) -> dict:
         """
@@ -254,7 +273,11 @@ def register_topic_tools(
             "subscribe_once(topic='/high_rate_topic', msg_type='sensor_msgs/Image', timeout=5.0, queue_length=5, throttle_rate_ms=100)  # Control message buffering and rate\n"
             "subscribe_once(topic='/camera/image_raw', msg_type='sensor_msgs/Image', expects_image='true')  # Hint that this is an image for faster processing\n"
             "subscribe_once(topic='/point_cloud', msg_type='sensor_msgs/PointCloud2', expects_image='false')  # Skip image detection for non-image data"
-        )
+        ),
+        annotations=ToolAnnotations(
+            title="Subscribe Once",
+            readOnlyHint=True,
+        ),
     )
     def subscribe_once(
         topic: str = "",
@@ -385,7 +408,11 @@ def register_topic_tools(
             "subscribe_for_duration(topic='/high_rate_topic', msg_type='sensor_msgs/Image', duration=10, queue_length=5, throttle_rate_ms=100)  # Control message buffering and rate\n"
             "subscribe_for_duration(topic='/camera/image_raw', msg_type='sensor_msgs/Image', duration=5, expects_image='true')  # Hint that this is an image for faster processing\n"
             "subscribe_for_duration(topic='/point_cloud', msg_type='sensor_msgs/PointCloud2', duration=5, expects_image='false')  # Skip image detection for non-image data"
-        )
+        ),
+        annotations=ToolAnnotations(
+            title="Subscribe for Duration",
+            readOnlyHint=True,
+        ),
     )
     def subscribe_for_duration(
         topic: str = "",
@@ -530,7 +557,11 @@ def register_topic_tools(
             "Example:\n"
             "publish_for_durations(topic='/cmd_vel', msg_type='geometry_msgs/msg/TwistStamped', "
             "messages=[{'linear': {'x': 1.0}}, {'linear': {'x': 0.0}}], durations=[1, 2])"
-        )
+        ),
+        annotations=ToolAnnotations(
+            title="Publish for Durations",
+            destructiveHint=True,
+        ),
     )
     def publish_for_durations(
         topic: str = "",
@@ -637,7 +668,11 @@ def register_topic_tools(
             "Publish a single message to a ROS topic.\n"
             "Example:\n"
             "publish_once(topic='/cmd_vel', msg_type='geometry_msgs/msg/TwistStamped', msg={'linear': {'x': 1.0}})"
-        )
+        ),
+        annotations=ToolAnnotations(
+            title="Publish Once",
+            destructiveHint=True,
+        ),
     )
     def publish_once(topic: str = "", msg_type: str = "", msg: dict = {}) -> dict:
         """
