@@ -8,10 +8,11 @@ def register_robot_spec_resources(mcp):
     """Register robot specification resources with the MCP server."""
 
     # Get the robot_specifications directory path
-    specs_dir = Path(__file__).parent.parent / "robot_specifications"
+    # From ros_mcp/resources/robot_specs.py, go up to project root
+    specs_dir = Path(__file__).parent.parent.parent / "robot_specifications"
 
-    @mcp.resource("ros-mcp://robot-specs/get_all_robots")
-    def get_all_robots() -> str:
+    @mcp.resource("ros-mcp://robot-specs/get_verified_robots_list")
+    def get_verified_robots_list() -> str:
         """
         Get all available robot specifications.
 
