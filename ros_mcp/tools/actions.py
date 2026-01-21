@@ -543,8 +543,8 @@ def register_action_tools(
         action_name: str,
         action_type: str,
         goal: dict,
-        timeout: float = None,
-        ctx: Context = None,
+        timeout: float | None = None,
+        ctx: Context | None = None,
     ) -> dict:
         """
         Send a goal to a ROS action server. Works only with ROS 2.
