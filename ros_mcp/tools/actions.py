@@ -123,6 +123,7 @@ def register_action_tools(
 
         # First, get the action type
         action_type = "unknown"
+        action_interfaces = []  # Initialize before if/else block
 
         # Check if required service is available
         required_services = ["/rosapi/interfaces"]
@@ -202,9 +203,7 @@ def register_action_tools(
             return {
                 "error": f"Action type for {action} not found",
                 "action": action,
-                "available_action_types": action_interfaces
-                if "action_interfaces" in locals()
-                else [],
+                "available_action_types": action_interfaces,
                 "suggestion": "This action might not be available or use a different naming pattern",
             }
 

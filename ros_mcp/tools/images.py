@@ -2,6 +2,7 @@
 
 import io
 import os
+from typing import Any
 
 from fastmcp import FastMCP
 from fastmcp.utilities.types import Image
@@ -67,7 +68,7 @@ def register_image_tools(
     )
     def analyze_previously_received_image(
         image_path: str = "./camera/received_image.jpeg",
-    ) -> dict:
+    ) -> dict | Any:
         """
         Analyze the previously received image saved at the specified path.
 
