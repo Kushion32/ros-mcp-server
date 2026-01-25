@@ -2,10 +2,10 @@
 
 import io
 import os
-from typing import Any
 
 from fastmcp import FastMCP
 from fastmcp.utilities.types import Image
+from mcp.types import ImageContent
 from PIL import Image as PILImage
 
 
@@ -34,7 +34,7 @@ def convert_expects_image_hint(expects_image: str) -> bool | None:
         return None
 
 
-def _encode_image_to_imagecontent(image):
+def _encode_image_to_imagecontent(image) -> ImageContent:
     """
     Encodes a PIL Image to a format compatible with ImageContent.
 
@@ -68,7 +68,7 @@ def register_image_tools(
     )
     def analyze_previously_received_image(
         image_path: str = "./camera/received_image.jpeg",
-    ) -> dict | Any:
+    ) -> dict | ImageContent:
         """
         Analyze the previously received image saved at the specified path.
 
