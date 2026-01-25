@@ -68,7 +68,7 @@ def register_image_tools(
     )
     def analyze_previously_received_image(
         image_path: str = "./camera/received_image.jpeg",
-    ) -> dict | ImageContent:
+    ) -> ImageContent:  # type: ignore  # See issue #140
         """
         Analyze the previously received image saved at the specified path.
 
@@ -88,6 +88,6 @@ def register_image_tools(
             ImageContent: JPEG-encoded image wrapped in an ImageContent object, or error dict if file not found.
         """
         if not os.path.exists(image_path):
-            return {"error": f"No image found at {image_path}"}
+            return {"error": f"No image found at {image_path}"}  # type: ignore[return-value]  # See issue #140
         img = PILImage.open(image_path)
         return _encode_image_to_imagecontent(img)
