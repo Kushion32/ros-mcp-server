@@ -239,7 +239,10 @@ def register_service_tools(
         )
     )
     def call_service(
-        service_name: str, service_type: str, request: dict, timeout: float = None
+        service_name: str,
+        service_type: str,
+        request: dict,
+        timeout: float = None,  # type: ignore[assignment]  # See issue #140
     ) -> dict:
         """
         Call a ROS service with specified request data.

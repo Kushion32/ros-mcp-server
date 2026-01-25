@@ -5,6 +5,7 @@ import os
 
 from fastmcp import FastMCP
 from fastmcp.utilities.types import Image
+from mcp.types import ImageContent
 from PIL import Image as PILImage
 
 
@@ -33,7 +34,7 @@ def convert_expects_image_hint(expects_image: str) -> bool | None:
         return None
 
 
-def _encode_image_to_imagecontent(image):
+def _encode_image_to_imagecontent(image) -> ImageContent:
     """
     Encodes a PIL Image to a format compatible with ImageContent.
 
@@ -67,7 +68,7 @@ def register_image_tools(
     )
     def analyze_previously_received_image(
         image_path: str = "./camera/received_image.jpeg",
-    ) -> dict:
+    ) -> ImageContent:  # type: ignore  # See issue #140
         """
         Analyze the previously received image saved at the specified path.
 
@@ -87,6 +88,6 @@ def register_image_tools(
             ImageContent: JPEG-encoded image wrapped in an ImageContent object, or error dict if file not found.
         """
         if not os.path.exists(image_path):
-            return {"error": f"No image found at {image_path}"}
+            return {"error": f"No image found at {image_path}"}  # type: ignore[return-value]  # See issue #140
         img = PILImage.open(image_path)
         return _encode_image_to_imagecontent(img)
