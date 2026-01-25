@@ -283,9 +283,9 @@ def register_topic_tools(
         topic: str = "",
         msg_type: str = "",
         expects_image: str = "auto",
-        timeout: float = None,
-        queue_length: int = None,
-        throttle_rate_ms: int = None,
+        timeout: float = None,  # type: ignore[assignment]  # See issue #140
+        queue_length: int = None,  # type: ignore[assignment]  # See issue #140
+        throttle_rate_ms: int = None,  # type: ignore[assignment]  # See issue #140
     ) -> dict:
         """
         Subscribe to a given ROS topic via rosbridge and return the first message received.
@@ -419,8 +419,8 @@ def register_topic_tools(
         msg_type: str = "",
         duration: float = 5.0,
         max_messages: int = 100,
-        queue_length: int = None,
-        throttle_rate_ms: int = None,
+        queue_length: int = None,  # type: ignore[assignment]  # See issue #140
+        throttle_rate_ms: int = None,  # type: ignore[assignment]  # See issue #140
         expects_image: str = "auto",
     ) -> dict:
         """

@@ -250,13 +250,14 @@ def register_parameter_tools(
                     "successful": bool(result_data) if result_data is not None else True,
                     "reason": "",
                 }
-        else:
-            error_msg = (
-                response.get("values", {}).get("message", "Service call failed")
-                if response and isinstance(response, dict)
-                else "No response"
-            )
-            return {"error": f"Failed to set parameter {name}: {error_msg}"}
+
+        # Fallback for unexpected response format
+        error_msg = (
+            response.get("values", {}).get("message", "Service call failed")
+            if response and isinstance(response, dict)
+            else "No response"
+        )
+        return {"error": f"Failed to set parameter {name}: {error_msg}"}
 
     @mcp.tool(
         description=(
