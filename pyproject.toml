@@ -24,8 +24,9 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "ruff",    # single tool for linting & formatting
-    "pytest"   # for tests
+    "ruff",           # single tool for linting & formatting
+    "pytest",         # for tests
+    "pytest-timeout", # test timeouts
 ]
 
 [project.scripts]
@@ -61,6 +62,17 @@ quote-style = "double"
 indent-style = "space"
 skip-magic-trailing-comma = false
 docstring-code-format = true
+
+# ---------------- Pytest configuration ----------------
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+addopts = "-v --tb=short"
+markers = [
+    "installation: installation tests using Docker containers",
+]
 
 # MCP Registry validation - required for PyPI package verification
 [tool.mcp]
