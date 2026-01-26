@@ -1,6 +1,7 @@
 """Robot configuration tools for ROS MCP."""
 
 from fastmcp import FastMCP
+from mcp.types import ToolAnnotations
 
 from ros_mcp.utils.config_utils import get_verified_robot_spec_util, get_verified_robots_list_util
 from ros_mcp.utils.websocket import WebSocketManager
@@ -14,7 +15,11 @@ def register_robot_config_tools(mcp: FastMCP, ws_manager: WebSocketManager) -> N
             "Load specifications and usage context for a verified robot model. "
             "ONLY use if the robot model is in the verified list (use get_verified_robots_list first to check). "
             "Most robots won't have a spec - that's OK, connect directly using connect_to_robot instead."
-        )
+        ),
+        annotations=ToolAnnotations(
+            title="Get Verified Robot Spec",
+            readOnlyHint=True,
+        ),
     )
     def get_verified_robot_spec(name: str) -> dict:
         """
@@ -47,7 +52,11 @@ def register_robot_config_tools(mcp: FastMCP, ws_manager: WebSocketManager) -> N
             "List pre-verified robot models that have specification files with usage guidance available. "
             "Use this to check if a robot model has additional context available before calling get_verified_robot_spec. "
             "If your robot is not in this list, you can still connect to it directly using connect_to_robot."
-        )
+        ),
+        annotations=ToolAnnotations(
+            title="Get Verified Robots List",
+            readOnlyHint=True,
+        ),
     )
     def get_verified_robots_list() -> dict:
         """
@@ -62,7 +71,13 @@ def register_robot_config_tools(mcp: FastMCP, ws_manager: WebSocketManager) -> N
         """
         return get_verified_robots_list_util()
 
-    @mcp.tool(description="Detect the ROS version and distribution via rosbridge.")
+    @mcp.tool(
+        description="Detect the ROS version and distribution via rosbridge.",
+        annotations=ToolAnnotations(
+            title="Detect ROS Version",
+            readOnlyHint=True,
+        ),
+    )
     def detect_ros_version() -> dict:
         """
         Detects the ROS version and distro via rosbridge WebSocket.

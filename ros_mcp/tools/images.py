@@ -5,7 +5,7 @@ import os
 
 from fastmcp import FastMCP
 from fastmcp.utilities.types import Image
-from mcp.types import ImageContent
+from mcp.types import ImageContent, ToolAnnotations
 from PIL import Image as PILImage
 
 
@@ -64,7 +64,11 @@ def register_image_tools(
             "- Service responses containing image data\n"
             "- subscribe_once() or subscribe_for_duration() operations\n"
             "Use this tool to analyze the saved image after receiving it from any source.\n"
-        )
+        ),
+        annotations=ToolAnnotations(
+            title="Analyze Previously Received Image",
+            readOnlyHint=True,
+        ),
     )
     def analyze_previously_received_image(
         image_path: str = "./camera/received_image.jpeg",

@@ -1,6 +1,7 @@
 """Node tools for ROS MCP."""
 
 from fastmcp import FastMCP
+from mcp.types import ToolAnnotations
 
 from ros_mcp.utils.websocket import WebSocketManager
 
@@ -11,7 +12,13 @@ def register_node_tools(
 ) -> None:
     """Register all node-related tools."""
 
-    @mcp.tool(description=("Get list of all currently running ROS nodes.\nExample:\nget_nodes()"))
+    @mcp.tool(
+        description=("Get list of all currently running ROS nodes.\nExample:\nget_nodes()"),
+        annotations=ToolAnnotations(
+            title="Get Nodes",
+            readOnlyHint=True,
+        ),
+    )
     def get_nodes() -> dict:
         """
         Get list of all currently running ROS nodes.
@@ -51,7 +58,11 @@ def register_node_tools(
             "Get detailed information about a specific node including its publishers, subscribers, and services.\n"
             "Example:\n"
             "get_node_details('/turtlesim')"
-        )
+        ),
+        annotations=ToolAnnotations(
+            title="Get Node Details",
+            readOnlyHint=True,
+        ),
     )
     def get_node_details(node: str) -> dict:
         """
