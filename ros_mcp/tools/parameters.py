@@ -1,6 +1,7 @@
 """Parameter tools for ROS MCP."""
 
 from fastmcp import FastMCP
+from mcp.types import ToolAnnotations
 
 from ros_mcp.utils.websocket import WebSocketManager
 
@@ -79,7 +80,11 @@ def register_parameter_tools(
         description=(
             "Get a single ROS parameter value by name. Works only with ROS 2.\n"
             "Example:\nget_parameter('/turtlesim:background_b')"
-        )
+        ),
+        annotations=ToolAnnotations(
+            title="Get Parameter",
+            readOnlyHint=True,
+        ),
     )
     def get_parameter(name: str) -> dict:
         """
@@ -163,7 +168,11 @@ def register_parameter_tools(
         description=(
             "Set a single ROS parameter value. Works only with ROS 2.\n"
             "Example:\nset_parameter('/turtlesim:background_b', '255')"
-        )
+        ),
+        annotations=ToolAnnotations(
+            title="Set Parameter",
+            destructiveHint=True,
+        ),
     )
     def set_parameter(name: str, value: str) -> dict:
         """
@@ -254,7 +263,11 @@ def register_parameter_tools(
         description=(
             "Check if a ROS parameter exists. Works only with ROS 2.\n"
             "Example:\nhas_parameter('/turtlesim:background_b')"
-        )
+        ),
+        annotations=ToolAnnotations(
+            title="Has Parameter",
+            readOnlyHint=True,
+        ),
     )
     def has_parameter(name: str) -> dict:
         """
@@ -287,7 +300,11 @@ def register_parameter_tools(
         description=(
             "Delete a ROS parameter. Works only with ROS 2.\n"
             "Example:\ndelete_parameter('/turtlesim:background_b')"
-        )
+        ),
+        annotations=ToolAnnotations(
+            title="Delete Parameter",
+            destructiveHint=True,
+        ),
     )
     def delete_parameter(name: str) -> dict:
         """
@@ -379,7 +396,11 @@ def register_parameter_tools(
         description=(
             "Get list of all ROS parameter names for a specific node. Works only with ROS 2.\n"
             "Example:\nget_parameters('cam2image')\nget_parameters('/cam2image')"
-        )
+        ),
+        annotations=ToolAnnotations(
+            title="Get Parameters",
+            readOnlyHint=True,
+        ),
     )
     def get_parameters(node_name: str) -> dict:
         """
@@ -605,7 +626,11 @@ def register_parameter_tools(
             "Works only with ROS 2.\n"
             "Example:\n"
             "get_parameter_details('/turtlesim:background_r')"
-        )
+        ),
+        annotations=ToolAnnotations(
+            title="Get Parameter Details",
+            readOnlyHint=True,
+        ),
     )
     def get_parameter_details(name: str) -> dict:
         """

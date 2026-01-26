@@ -3,6 +3,7 @@
 from typing import Union
 
 from fastmcp import FastMCP
+from mcp.types import ToolAnnotations
 
 from ros_mcp.utils.network_utils import ping_ip_and_port
 from ros_mcp.utils.websocket import WebSocketManager
@@ -19,7 +20,11 @@ def register_connection_tools(
     @mcp.tool(
         description=(
             "Connect to the robot by setting the IP/port. This tool also tests connectivity to confirm that the robot is reachable and the port is open."
-        )
+        ),
+        annotations=ToolAnnotations(
+            title="Connect to Robot",
+            destructiveHint=False,
+        ),
     )
     def connect_to_robot(
         ip: str = default_ip,
@@ -61,7 +66,11 @@ def register_connection_tools(
             "A successful ping to the IP but not the port can indicate that ROSbridge is not running.\n"
             "Example:\n"
             "ping_robot(ip='192.168.1.100', port=9090)"
-        )
+        ),
+        annotations=ToolAnnotations(
+            title="Ping Robot",
+            readOnlyHint=True,
+        ),
     )
     def ping_robot(
         ip: str,
