@@ -23,7 +23,7 @@ def register_connection_tools(
         ),
         annotations=ToolAnnotations(
             title="Connect to Robot",
-            destructiveHint=True,
+            destructiveHint=False,
         ),
     )
     def connect_to_robot(
