@@ -5,8 +5,7 @@ import os
 
 from fastmcp import FastMCP
 from fastmcp.utilities.types import Image
-from mcp.types import ToolAnnotations
-from mcp.types import ImageContent
+from mcp.types import ImageContent, ToolAnnotations
 from PIL import Image as PILImage
 
 
