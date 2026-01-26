@@ -117,8 +117,8 @@ def require_docker():
 def build_docker_image(
     dockerfile_path: Path,
     context_path: Path,
-    tag: str|None = None,
-    build_args: dict|None = None,
+    tag: str | None = None,
+    build_args: dict | None = None,
     timeout: int = 300,
 ) -> subprocess.CompletedProcess:
     """
@@ -155,7 +155,7 @@ def build_docker_image(
 
 def run_docker_container(
     image: str,
-    command: str|None = None,
+    command: str | None = None,
     timeout: int = 60,
 ) -> subprocess.CompletedProcess:
     """
