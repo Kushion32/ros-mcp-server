@@ -28,6 +28,3 @@ RUN uv --version
 # Run ros-mcp using uvx from git repository
 # This downloads and runs ros-mcp from the specified branch
 RUN uvx --from "git+${REPO_URL}@${BRANCH}" ros-mcp --help
-
-# Final success message
-RUN echo "SUCCESS: uvx ros-mcp installation from git+${REPO_URL}@${BRANCH} works correctly"

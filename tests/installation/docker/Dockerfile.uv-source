@@ -28,6 +28,3 @@ RUN uv sync
 
 # Verify ros-mcp runs via uv run
 RUN uv run ros-mcp --help
-
-# Final success message
-RUN echo "SUCCESS: uv sync from source works correctly"

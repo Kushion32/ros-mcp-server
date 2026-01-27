@@ -54,10 +54,7 @@ def test_uv_source_with_dev_dependencies(repo_root: Path, docker_dir: Path):
     dockerfile_content = (docker_dir / "Dockerfile.uv-source").read_text()
     dockerfile_content = dockerfile_content.replace("RUN uv sync", "RUN uv sync --extra dev")
     # Also verify pytest is available
-    dockerfile_content = dockerfile_content.replace(
-        'RUN echo "SUCCESS: uv sync from source works correctly"',
-        'RUN uv run pytest --version && echo "SUCCESS: uv sync with dev dependencies works correctly"',
-    )
+    dockerfile_content += "\n# Verify pytest is available with dev dependencies\nRUN uv run pytest --version\n"
 
     temp_dockerfile = docker_dir / "Dockerfile.uv-source-dev"
     temp_dockerfile.write_text(dockerfile_content)

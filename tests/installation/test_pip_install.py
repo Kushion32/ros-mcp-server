@@ -41,12 +41,6 @@ def test_pip_install_from_git(repo_root: Path, docker_dir: Path, git_branch: str
             f"STDERR:\n{result.stderr}"
         )
 
-        # Verify success message is in output (Docker outputs to stderr)
-        combined_output = result.stdout + result.stderr
-        assert "SUCCESS" in combined_output or "ros-mcp" in combined_output.lower(), (
-            f"Build succeeded but output unexpected:\n{combined_output}"
-        )
-
     finally:
         cleanup_docker_image(tag)
 

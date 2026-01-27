@@ -26,7 +26,4 @@ RUN pip install "git+${REPO_URL}@${BRANCH}"
 RUN ros-mcp --help
 
 # Verify the package is importable
-RUN python -c "import ros_mcp; print('ros-mcp installed from git successfully')"
-
-# Final success message
-RUN echo "SUCCESS: pip install from git+${REPO_URL}@${BRANCH} works correctly"
+RUN python -c "import ros_mcp; print('ros-mcp installed successfully')"
