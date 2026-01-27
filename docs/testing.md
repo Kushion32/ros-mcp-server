@@ -1,6 +1,55 @@
 # Testing Guide for ROS MCP Server
 
-This guide explains how to test the ROS MCP Server using prompts and resources.
+This guide explains how to test the ROS MCP Server using prompts, resources, and automated tests.
+
+## Running Installation Tests
+
+Installation tests verify that the package can be installed correctly using different methods (uvx, pip, uv). These tests use Docker to create clean Python environments and install from git.
+
+### Prerequisites
+
+- Docker installed and running
+- pytest (`pip install pytest pytest-timeout`)
+
+### Running Installation Tests
+
+```bash
+# Run all installation tests (uses current branch by default)
+pytest tests/installation -v
+
+# Test a specific branch
+pytest tests/installation -v --branch=feat/new-feature
+
+# Test a specific tag/release
+pytest tests/installation -v --branch=v2.5.0
+
+# Test from a different repository (e.g., a fork)
+pytest tests/installation -v --repo-url=https://github.com/user/fork.git --branch=main
+
+# Run only uvx installation tests
+pytest tests/installation/test_uvx_install.py -v
+
+# Run only pip installation tests
+pytest tests/installation/test_pip_install.py -v
+```
+
+### Installation Test Categories
+
+| Test File | What It Tests |
+|-----------|---------------|
+| `test_uvx_install.py` | `uvx --from git+URL@branch ros-mcp` installation |
+| `test_pip_install.py` | `pip install git+URL@branch` and `pip install .` |
+| `test_source_install.py` | `uv sync` development workflow |
+
+### Multi-Python Version Testing
+
+Installation tests run against Python 3.10, 3.11, and 3.12:
+
+```bash
+# These are parametrized tests that run automatically
+pytest tests/installation/test_pip_install.py::test_pip_install_python_versions -v
+pytest tests/installation/test_source_install.py::test_uv_source_python_versions -v
+```
 
 ## Prerequisites
 
