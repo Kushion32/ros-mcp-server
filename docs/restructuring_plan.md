@@ -1,10 +1,6 @@
 # Repository Restructuring & Tool Migration Plan
 
-> **Note**: This plan is based on the original approach from [merge_plan_mok.md](merge_plan_mok.md), with detailed implementation steps specific to this repository.
-
-## Related Documents
-
-- **[merge_plan_mok.md](merge_plan_mok.md)**: Original high-level plan from mok (refactor-to-library + submodule approach)
+> **Note**: This plan documents the refactoring process that migrated the monolithic server to a modular structure. The refactoring is now complete.
 
 ## Summary: Implementation vs Original Plan
 
