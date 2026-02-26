@@ -41,14 +41,18 @@ def register_node_tools(
             response = ws_manager.request(message)
 
         # Check for service response errors first
-        if response and "result" in response and not response["result"]:
-            # Service call failed - return error with details from values
-            error_msg = response.get("values", {}).get("message", "Service call failed")
+        if not isinstance(response, dict):
+            return {"warning": "rosapi not available - /rosapi/nodes does not exist on this robot"}
+
+        if response.get("result") is False:
+            values = response.get("values", {})
+            error_msg = values.get("message", "Service call failed") if isinstance(values, dict) else str(values)
             return {"error": f"Service call failed: {error_msg}"}
 
         # Return node info if present
-        if response and "values" in response:
-            nodes = response["values"].get("nodes", [])
+        if "values" in response:
+            values = response["values"]
+            nodes = values.get("nodes", []) if isinstance(values, dict) else []
             return {"nodes": nodes, "node_count": len(nodes)}
         else:
             return {"warning": "No nodes found"}
@@ -103,13 +107,16 @@ def register_node_tools(
             response = ws_manager.request(message)
 
         # Check for service response errors first
-        if response and "result" in response and not response["result"]:
-            # Service call failed - return error with details from values
-            error_msg = response.get("values", {}).get("message", "Service call failed")
+        if not isinstance(response, dict):
+            return {"error": f"rosapi not available: {response}"}
+
+        if response.get("result") is False:
+            values = response.get("values", {})
+            error_msg = values.get("message", "Service call failed") if isinstance(values, dict) else str(values)
             return {"error": f"Service call failed: {error_msg}"}
 
         # Extract data from the response
-        if response and "values" in response:
+        if "values" in response:
             values = response["values"]
             # Extract publishers, subscribers, and services from the response
             # Note: rosapi uses "publishing" and "subscribing" field names

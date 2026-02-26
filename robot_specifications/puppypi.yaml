@@ -1,0 +1,50 @@
+# PuppyPi Robot Configuration
+# HiWonder Quadruped Robot
+
+name: puppypi
+alias: puppy
+type: real
+prompts: |
+  PuppyPi is a quadruped robot from HiWonder.
+
+  ## Movement Control — use services, NOT topics
+  The reliable way to move the dog is via the trigger services, which block until
+  the movement completes. Do NOT use /puppy_control/velocity or /cmd_vel — they
+  do not work reliably.
+
+  ### Move a distance (forward / backward)
+  - Service: /puppy/move_distance_trigger
+  - Type: puppy_control_msgs/srv/MoveDistanceTrigger
+  - Args: {"distance": <cm>, "speed": <0.0-1.0>}
+  - Positive distance = forward, negative = backward
+  - Recommended speed: 0.5
+  - Set timeout >= 15 seconds to allow movement to complete
+  - Example (move 10 cm forward at half speed):
+      call_service("/puppy/move_distance_trigger",
+                   "puppy_control_msgs/srv/MoveDistanceTrigger",
+                   {"distance": 10, "speed": 0.5},
+                   timeout=15)
+
+  ### Rotate
+  - Service: /puppy/rotate_angle_trigger
+  - Type: puppy_control_msgs/srv/RotateAngleTrigger
+  - Args: {"angle": <degrees>, "speed": <0.0-1.0>}
+  - Positive angle = left (counter-clockwise), negative = right (clockwise)
+
+  ## Important Topics (read-only / diagnostics)
+  - /joint_states - Robot joint positions
+  - /usb_cam/image_raw - Camera feed (when camera node is running)
+  - /scan - Lidar data (when lidar is running)
+
+  ## Other Services
+  - /puppy_control/go_home - Return to home position (std_srvs/srv/Empty)
+  - /puppy_control/set_running - Enable/disable robot (std_srvs/srv/SetBool)
+  - /puppy_control/set_self_balancing - Enable/disable self-balancing (std_srvs/srv/SetBool)
+  - /puppy_control/runActionGroup - Run predefined action (puppy_control_msgs/srv/SetRunActionName)
+
+  ## Camera
+  - Camera topic: /usb_cam/image_raw
+
+  ## What does NOT work
+  - /puppy_control/velocity topic — unreliable, do not use
+  - /cmd_vel topic — does not work with this robot

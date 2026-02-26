@@ -45,13 +45,14 @@ def register_topic_tools(
             response = ws_manager.request(message)
 
         # Check for service response errors first
-        if response and "result" in response and not response["result"]:
+        if isinstance(response, dict) and "result" in response and not response["result"]:
             # Service call failed - return error with details from values
-            error_msg = response.get("values", {}).get("message", "Service call failed")
+            values = response.get("values", {})
+            error_msg = values.get("message", "Service call failed") if isinstance(values, dict) else "Service call failed"
             return {"error": f"Service call failed: {error_msg}"}
 
         # Return topic info if present
-        if response and "values" in response:
+        if isinstance(response, dict) and "values" in response:
             values = response["values"]
             topics = values.get("topics", [])
             types = values.get("types", [])
@@ -97,13 +98,14 @@ def register_topic_tools(
             response = ws_manager.request(message)
 
         # Check for service response errors first
-        if response and "result" in response and not response["result"]:
+        if isinstance(response, dict) and "result" in response and not response["result"]:
             # Service call failed - return error with details from values
-            error_msg = response.get("values", {}).get("message", "Service call failed")
+            values = response.get("values", {})
+            error_msg = values.get("message", "Service call failed") if isinstance(values, dict) else "Service call failed"
             return {"error": f"Service call failed: {error_msg}"}
 
         # Return topic type if present
-        if response and "values" in response:
+        if isinstance(response, dict) and "values" in response:
             topic_type = response["values"].get("type", "")
             if topic_type:
                 return {"topic": topic, "type": topic_type}
@@ -236,13 +238,14 @@ def register_topic_tools(
             response = ws_manager.request(message)
 
         # Check for service response errors first
-        if response and "result" in response and not response["result"]:
+        if isinstance(response, dict) and "result" in response and not response["result"]:
             # Service call failed - return error with details from values
-            error_msg = response.get("values", {}).get("message", "Service call failed")
+            values = response.get("values", {})
+            error_msg = values.get("message", "Service call failed") if isinstance(values, dict) else "Service call failed"
             return {"error": f"Service call failed: {error_msg}"}
 
         # Return message structure if present
-        if response and "values" in response:
+        if isinstance(response, dict) and "values" in response:
             typedefs = response["values"].get("typedefs", [])
             if typedefs:
                 # Parse the structure into a more readable format

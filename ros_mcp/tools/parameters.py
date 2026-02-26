@@ -40,8 +40,12 @@ def _safe_check_parameter_exists(
         if not response:
             return False, "No response from service", None
 
+        # Handle string responses (rosbridge can return error strings)
+        if not isinstance(response, dict):
+            return False, f"Unexpected response format: {response}", None
+
         # Check if parameter exists based on response
-        if response and "values" in response:
+        if "values" in response:
             result_data = response["values"]
             if isinstance(result_data, dict):
                 value = result_data.get("value", "")
@@ -51,7 +55,7 @@ def _safe_check_parameter_exists(
                     return False, reason, None
                 # Parameter exists and has a value
                 return True, "", response
-        elif response and "result" in response:
+        elif "result" in response:
             result_data = response["result"]
             if isinstance(result_data, dict):
                 value = result_data.get("value", "")

@@ -41,14 +41,18 @@ def register_service_tools(
             response = ws_manager.request(message)
 
         # Check for service response errors first
-        if response and "result" in response and not response["result"]:
+        if not isinstance(response, dict):
+            return {"warning": "rosapi not available - /rosapi/services does not exist on this robot"}
+
+        if response.get("result") is False:
             # Service call failed - return error with details from values
-            error_msg = response.get("values", {}).get("message", "Service call failed")
+            values = response.get("values", {})
+            error_msg = values.get("message", "Service call failed") if isinstance(values, dict) else str(values)
             return {"error": f"Service call failed: {error_msg}"}
 
         # Return service info if present
-        if response and "values" in response:
-            services = response["values"].get("services", [])
+        if "values" in response:
+            services = response["values"].get("services", []) if isinstance(response["values"], dict) else []
             return {"services": services, "service_count": len(services)}
         else:
             return {"warning": "No services found"}
@@ -91,14 +95,17 @@ def register_service_tools(
             response = ws_manager.request(message)
 
         # Check for service response errors first
-        if response and "result" in response and not response["result"]:
-            # Service call failed - return error with details from values
-            error_msg = response.get("values", {}).get("message", "Service call failed")
+        if not isinstance(response, dict):
+            return {"error": f"rosapi not available: {response}"}
+
+        if response.get("result") is False:
+            values = response.get("values", {})
+            error_msg = values.get("message", "Service call failed") if isinstance(values, dict) else str(values)
             return {"error": f"Service call failed: {error_msg}"}
 
         # Return service type if present
-        if response and "values" in response:
-            service_type = response["values"].get("type", "")
+        if "values" in response:
+            service_type = response["values"].get("type", "") if isinstance(response["values"], dict) else ""
             if service_type:
                 return {"service": service, "type": service_type}
             else:
@@ -152,14 +159,15 @@ def register_service_tools(
             }
 
             type_response = ws_manager.request(type_message)
-            if type_response and "values" in type_response:
-                service_type = type_response["values"].get("type", "")
+            if isinstance(type_response, dict) and "values" in type_response:
+                values = type_response["values"]
+                service_type = values.get("type", "") if isinstance(values, dict) else ""
                 if service_type:
                     result["type"] = service_type
                 else:
                     return {"error": f"Service {service} does not exist or has no type"}
             else:
-                return {"error": f"Failed to get type for service {service}"}
+                return {"error": f"Failed to get type for service {service} (rosapi unavailable)"}
 
             # Get request details
             request_message = {
@@ -171,8 +179,9 @@ def register_service_tools(
             }
 
             request_response = ws_manager.request(request_message)
-            if request_response and "values" in request_response:
-                typedefs = request_response["values"].get("typedefs", [])
+            if isinstance(request_response, dict) and "values" in request_response:
+                values = request_response["values"]
+                typedefs = values.get("typedefs", []) if isinstance(values, dict) else []
                 if typedefs:
                     for typedef in typedefs:
                         field_names = typedef.get("fieldnames", [])
@@ -192,8 +201,9 @@ def register_service_tools(
             }
 
             response_response = ws_manager.request(response_message)
-            if response_response and "values" in response_response:
-                typedefs = response_response["values"].get("typedefs", [])
+            if isinstance(response_response, dict) and "values" in response_response:
+                values = response_response["values"]
+                typedefs = values.get("typedefs", []) if isinstance(values, dict) else []
                 if typedefs:
                     for typedef in typedefs:
                         field_names = typedef.get("fieldnames", [])
@@ -218,11 +228,13 @@ def register_service_tools(
             # Handle different response formats safely
             if provider_response and isinstance(provider_response, dict):
                 if "values" in provider_response:
-                    node = provider_response["values"].get("node", "")
+                    values = provider_response["values"]
+                    node = values.get("node", "") if isinstance(values, dict) else ""
                     if node:
                         providers = [node]
                 elif "result" in provider_response:
-                    node = provider_response["result"].get("node", "")
+                    result_val = provider_response["result"]
+                    node = result_val.get("node", "") if isinstance(result_val, dict) else ""
                     if node:
                         providers = [node]
 
@@ -293,9 +305,17 @@ def register_service_tools(
             response = ws_manager.request(message, timeout=timeout)
 
         # Check for service response errors first
-        if response and "result" in response and not response["result"]:
-            # Service call failed - return error with details from values
-            error_msg = response.get("values", {}).get("message", "Service call failed")
+        if not isinstance(response, dict):
+            return {
+                "service": service_name,
+                "service_type": service_type,
+                "success": False,
+                "error": f"No response or connection error: {response}",
+            }
+
+        if response.get("result") is False:
+            values = response.get("values", {})
+            error_msg = values.get("message", "Service call failed") if isinstance(values, dict) else str(values)
             return {
                 "service": service_name,
                 "service_type": service_type,

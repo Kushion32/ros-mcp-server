@@ -22,6 +22,7 @@ def register_all_tools(
     ws_manager: WebSocketManager,
     rosbridge_ip: str = "127.0.0.1",
     rosbridge_port: int = 9090,
+    camera_topic: str = "/image_raw/compressed",
 ) -> None:
     """Register all ROS MCP tools with the provided FastMCP instance.
 
@@ -38,7 +39,7 @@ def register_all_tools(
     register_action_tools(mcp, ws_manager)
     register_connection_tools(mcp, ws_manager, rosbridge_ip, rosbridge_port)
     register_robot_config_tools(mcp, ws_manager)
-    register_image_tools(mcp)
+    register_image_tools(mcp, ws_manager, default_camera_topic=camera_topic)
     register_node_tools(mcp, ws_manager)
     register_parameter_tools(mcp, ws_manager)
     register_service_tools(mcp, ws_manager)

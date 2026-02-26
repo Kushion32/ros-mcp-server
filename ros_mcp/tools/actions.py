@@ -58,7 +58,8 @@ def register_action_tools(
                     },
                 }
 
-            available_services = services_response.get("values", {}).get("services", [])
+            _svc_values = services_response.get("values", {})
+            available_services = _svc_values.get("services", []) if isinstance(_svc_values, dict) else []
             missing_services = [svc for svc in required_services if svc not in available_services]
 
             if missing_services:
@@ -159,7 +160,8 @@ def register_action_tools(
                     },
                 }
 
-            available_services = services_response.get("values", {}).get("services", [])
+            _svc_values = services_response.get("values", {})
+            available_services = _svc_values.get("services", []) if isinstance(_svc_values, dict) else []
             missing_services = [svc for svc in required_services if svc not in available_services]
 
             if missing_services:
@@ -255,7 +257,8 @@ def register_action_tools(
                     },
                 }
 
-            available_services = services_response.get("values", {}).get("services", [])
+            _svc_values = services_response.get("values", {})
+            available_services = _svc_values.get("services", []) if isinstance(_svc_values, dict) else []
             missing_services = [
                 svc for svc in required_detail_services if svc not in available_services
             ]
@@ -581,7 +584,7 @@ def register_action_tools(
         if not action_type or not action_type.strip():
             return {"error": "Action type cannot be empty"}
 
-        if not goal:
+        if goal is None:
             return {"error": "Goal cannot be empty"}
 
         # Use ws_manager.default_timeout if timeout is None
