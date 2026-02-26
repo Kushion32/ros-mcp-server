@@ -9,9 +9,11 @@ from fastmcp.utilities.types import Image
 from mcp.types import ImageContent, ToolAnnotations
 from PIL import Image as PILImage
 
-# Shared image directory with Reachy Mini MCP server
-# This allows Reachy's describe_image tool to analyze ROS camera captures
-_SHARED_IMAGES_DIR = Path.home() / "Desktop" / "lily-reachy-mcp" / "reachy-mcp" / "images"
+# Shared image directory with Reachy Mini MCP server.
+# This file lives at server/ros-mcp-server/ros_mcp/tools/images.py inside the
+# reachy-mcp repo, so 5 parents up reaches the reachy-mcp root — the same base
+# that Reachy's vision.py uses for its images/ directory.
+_SHARED_IMAGES_DIR = Path(__file__).resolve().parent.parent.parent.parent.parent / "images"
 _ROS_IMAGES_DIR = _SHARED_IMAGES_DIR / "ros"
 
 
